@@ -1,0 +1,76 @@
+//
+//  SubChannelViewController.swift
+//  Uchan
+//
+//  Created by Joyce on 2018/3/7.
+//  Copyright © 2018年 Joy. All rights reserved.
+//
+
+import UIKit
+
+class SubChannelViewController: UIViewController,UITableViewDataSource, UITableViewDelegate,UINavigationBarDelegate {
+    var db:SQLiteConnect?
+    var channelList:Array<ChannelDataType> = []
+    
+    
+
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        //channelTableView.delegate = self
+        //channelTableView.dataSource = self
+        
+        let sqlitePath = NSHomeDirectory() + "/Documents/sqlite3.db"
+        print(sqlitePath)
+        
+        db = SQLiteConnect(path: sqlitePath)
+        channelList = (db?.fetchAll())!
+        
+        //channelTableView.reloadData()
+        for ii in channelList{
+            print("**********")
+            print("\(ii.title)")
+            print("\(ii.thumbnail)")
+            print("\(ii.description)")
+        }
+
+    }
+
+    override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
+        // Dispose of any resources that can be recreated.
+    }
+    
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        // #warning Incomplete implementation, return the number of rows
+        return channelList.count
+    }
+    
+    
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "com.joy.Uchan.subChannel", for: indexPath)
+        
+        let channelLabel = cell.viewWithTag(41) as! UILabel
+        let channelThumbnailImageView = cell.viewWithTag(42) as! UIImageView
+        let channelDescriptionTextView = cell.viewWithTag(43) as! UITextView
+        
+        channelLabel.text = channelList[indexPath.row].title
+        channelThumbnailImageView.image = UIImage(data:try! Data(contentsOf:channelList[indexPath.row].thumbnail))!
+        channelDescriptionTextView.text = channelList[indexPath.row].description
+        
+        return cell
+    }
+    
+
+    /*
+    // MARK: - Navigation
+
+    // In a storyboard-based application, you will often want to do a little preparation before navigation
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        // Get the new view controller using segue.destinationViewController.
+        // Pass the selected object to the new view controller.
+    }
+    */
+
+}
+
